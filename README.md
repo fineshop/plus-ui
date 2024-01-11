@@ -4,4 +4,4 @@ Plus UI is a modern and User-Friendly Blogger Template. It offers a lot of usefu
 
 # Not Maintained
 
-This repository is no longer maintained
+This repository is no longer maintained since we moved to private repository.
