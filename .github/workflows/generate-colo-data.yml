@@ -1,0 +1,48 @@
+name: Generate colo data
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  push:
+
+jobs:
+  build_colo:
+    runs-on: ubuntu-latest
+    env:
+      WORK_PATH: ./colo
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+      - name: Use venv
+        run: |
+          python3 -m venv --prompt . .venv
+        working-directory: ${{ env.WORK_PATH }}
+
+      - name: Install dependencies
+        run: |
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/pip install -r requirements.txt
+        working-directory: ${{ env.WORK_PATH }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Generate data
+        run: |
+          .venv/bin/python generate.py
+        working-directory: ${{ env.WORK_PATH }}
+
+      - name: Push generated data
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          repository: .
+          commit_options: "--allow-empty"
+          commit_message: |
+            update: generated colo data
+            Triggered by ${{ github.sha }}
